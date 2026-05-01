@@ -91,35 +91,36 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 }
 
 func storeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Only POST allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
 	var data SMS
 
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Invalid JSON", 400)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
-	if len(parts) < 4 {
-		http.Error(w, "Invalid data", 400)
+	// basic validation
+	if data.UserID == "" || data.PhoneNumber == "" || data.Message == "" {
+		http.Error(w, "Missing fields", http.StatusBadRequest)
 		return
 	}
 
-	data := SMS{
-		UserID:      parts[0],
-		PhoneNumber: parts[1],
-		Message:     parts[2],
-		Status:      parts[3],
-	}
+	data.Status = "stored"
 
-	_, err := collection.InsertOne(context.TODO(), data)
+	_, err = collection.InsertOne(context.TODO(), data)
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	fmt.Println("Stored via HTTP:", data)
 
+	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("stored"))
 }
 
