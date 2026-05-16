@@ -1,22 +1,14 @@
 package com.sms.sender.service;
 
-import org.springframework.stereotype.Service;
 import java.util.Random;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SMSService {
 
+    private final Random random = new Random();
+
     public String sendSMS(String phoneNumber, String message) {
-
-        // Mock SMS sending
-        Random random = new Random();
-
-        boolean success = random.nextBoolean();
-
-        if (success) {
-            return "SUCCESS";
-        } else {
-            return "FAIL";
-        }
+        return random.nextBoolean() ? "SUCCESS" : "FAIL";
     }
 }

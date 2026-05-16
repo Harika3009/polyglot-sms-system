@@ -1,19 +1,19 @@
 package com.sms.sender.service;
 
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import java.util.Set;
-import java.util.HashSet;
 
 @Service
 public class RedisService {
 
-    private Set<String> blockedUsers = new HashSet<>();
+    private final StringRedisTemplate redisTemplate;
 
-    public RedisService() {
-        blockedUsers.add("blocked-user"); // example blocked user
+    public RedisService(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
     }
 
     public boolean isBlocked(String userId) {
-        return blockedUsers.contains(userId);
+        Boolean exists = redisTemplate.opsForSet().isMember("blocked-users", userId);
+        return Boolean.TRUE.equals(exists);
     }
 }
