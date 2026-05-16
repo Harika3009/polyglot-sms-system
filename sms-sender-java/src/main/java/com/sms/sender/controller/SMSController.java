@@ -41,7 +41,11 @@ public class SMSController {
                 status
         );
 
-        kafkaProducerService.publishSmsEvent(event);
+        try {
+            kafkaProducerService.publishSmsEvent(event);
+        } catch (Exception e) {
+            return new SMSResponse("ERROR", "Failed to queue SMS event: " + e.getMessage());
+        }
 
         return new SMSResponse(status, "SMS processed successfully");
     }

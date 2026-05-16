@@ -6,6 +6,9 @@ import (
     "fmt"
     "log"
     "net/http"
+    "os"
+    "os/signal"
+    "syscall"
     "strings"
     "time"
 
@@ -33,23 +36,39 @@ func main() {
 
     collection = client.Database("smsdb").Collection("messages")
 
-    go consumeKafka()
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    go consumeKafka(ctx)
 
     http.HandleFunc("/v1/user/", getUserMessages)
 
     fmt.Println("Go Server running on port 8081...")
-    log.Fatal(http.ListenAndServe(":8081", nil))
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+    go func() {
+        log.Fatal(http.ListenAndServe(":8081", nil))
+    }()
+
+    <-quit
+    log.Println("Shutting down...")
+    cancel()
 }
 
-func consumeKafka() {
+func consumeKafka(ctx context.Context) {
     reader := kafka.NewReader(kafka.ReaderConfig{
         Brokers: []string{"localhost:9092"},
         Topic: "sms-topic",
         GroupID: "sms-group",
     })
+    defer reader.Close()
 
     for {
-        msg, err := reader.ReadMessage(context.Background())
+        msg, err := reader.ReadMessage(ctx)
+        if ctx.Err() != nil {
+            return
+        }        
         if err != nil {
             log.Printf("kafka read error: %v", err)
             continue

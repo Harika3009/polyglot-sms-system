@@ -12,4 +12,19 @@ class SMSServiceTest {
         String result = smsService.sendSMS("9999999999", "hello");
         assertTrue(result.equals("SUCCESS") || result.equals("FAIL"));
     }
+
+    @Test
+    void shouldNotReturnNullOrEmpty() {
+        String result = smsService.sendSMS("9999999999", "hello");
+        assertTrue(result != null && !result.isEmpty());
+    }
+
+    @Test
+    void shouldReturnValidStatusAfterMultipleCalls() {
+        for (int i = 0; i < 10; i++) {
+            String result = smsService.sendSMS("9999999999", "hello");
+            assertTrue(result.equals("SUCCESS") || result.equals("FAIL"),
+                "Expected SUCCESS or FAIL but got: " + result);
+        }
+    }
 }

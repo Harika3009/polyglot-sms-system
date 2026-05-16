@@ -246,7 +246,7 @@ If a user exists in the blocked list:
 Kafka topic used:
 
 ```text
-sms-events
+sms-topic
 ```
 
 Java service publishes events.
