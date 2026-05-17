@@ -372,7 +372,3 @@ Observe Kafka consumer logs in Go terminal.
 Fetch stored SMS history.
 
 ---
-
-# Author
-
-Polyglot Distributed SMS Service Assignment
