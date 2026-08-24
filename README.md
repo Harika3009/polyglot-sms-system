@@ -321,23 +321,6 @@ Implemented:
 
 ---
 
-# Assignment Requirements Covered
-
-| Requirement | Status |
-|---|---|
-| Java Spring Boot Service | ✅ |
-| GoLang Service | ✅ |
-| Kafka Producer | ✅ |
-| Kafka Consumer | ✅ |
-| MongoDB Persistence | ✅ |
-| Redis Blocklist | ✅ |
-| REST APIs | ✅ |
-| Polyglot Architecture | ✅ |
-| Inter-Service Communication | ✅ |
-| Unit Testing | ✅ |
-| Docker Support | ✅ |
-
----
 
 # Demonstration Flow
 
